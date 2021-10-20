@@ -19,6 +19,11 @@ class BowlingTest {
     fun `spare`() {
         expect(score(listOf(Spare(9, 1), OpenFrame(4, 3)))).toBe(21)
     }
+
+    @Test
+    fun `strike`() {
+        expect(score(listOf(Strike, OpenFrame(4, 3)))).toBe(24)
+    }
 }
 
 sealed interface Frame {
@@ -37,9 +42,17 @@ data class Spare(override val roll1: Int, val roll2: Int) : Frame {
     }
 }
 
+object Strike : Frame {
+    override val roll1: Int = 10
+}
+
 fun score(frames: List<Frame>): Int = frames.windowed(2, partialWindows = true).map { frames ->
     when (val current = frames[0]) {
         is OpenFrame -> current.roll1 + current.roll2
         is Spare -> current.roll1 + current.roll2 + frames[1].roll1
+        is Strike -> current.roll1  + when(val next = frames[1]) {
+            is OpenFrame -> next.roll1 + next.roll2
+            else -> TODO()
+        }
     }
 }.sum()
