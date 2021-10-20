@@ -7,8 +7,6 @@ class BowlingTest {
     fun `two frames`() {
         expect(score(listOf(OpenFrame(0, 0), OpenFrame(0, 1)))).toBe(1)
         expect(score(listOf(OpenFrame(0, 1), OpenFrame(2, 3)))).toBe(6)
-        expect(score(listOf(OpenFrame(9, 1), OpenFrame(4, 3)))).toBe(17)
-        expect(score(listOf(OpenFrame(10, 0), OpenFrame(4, 3)))).toBe(17)
     }
 
     @Test
@@ -27,9 +25,17 @@ sealed interface Frame {
     val roll1: Int
 }
 
-data class OpenFrame(override val roll1: Int, val roll2: Int) : Frame
+data class OpenFrame(override val roll1: Int, val roll2: Int) : Frame {
+    init {
+        require(roll1 + roll2 <= 9) { "Sum of pins must be less than or equal to 9" }
+    }
+}
 
-data class Spare(override val roll1: Int, val roll2: Int) : Frame
+data class Spare(override val roll1: Int, val roll2: Int) : Frame {
+    init {
+        require(roll1 + roll2 == 10) { "Sum of pins must be equal to 10" }
+    }
+}
 
 fun score(frames: List<Frame>): Int = frames.windowed(2, partialWindows = true).map { frames ->
     when (val current = frames[0]) {
