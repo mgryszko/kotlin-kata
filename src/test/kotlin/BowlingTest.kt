@@ -29,32 +29,40 @@ class BowlingTest {
 
 sealed interface Frame {
     val roll1: Int
+
+    fun pins(): Sequence<Int>
 }
 
 data class OpenFrame(override val roll1: Int, val roll2: Int) : Frame {
     init {
         require(roll1 + roll2 <= 9) { "Sum of pins must be less than or equal to 9" }
     }
+
+    override fun pins(): Sequence<Int> = sequenceOf(roll1, roll2)
 }
 
 data class Spare(override val roll1: Int, val roll2: Int) : Frame {
     init {
         require(roll1 + roll2 == 10) { "Sum of pins must be equal to 10" }
     }
+
+    override fun pins(): Sequence<Int> = sequenceOf(roll1, roll2)
 }
 
 object Strike : Frame {
     override val roll1: Int = 10
+
+    override fun pins(): Sequence<Int> = sequenceOf(roll1)
 }
 
-fun score(frames: List<Frame>): Int = frames.windowed(2, partialWindows = true).map { frames ->
-    when (val current = frames[0]) {
-        is OpenFrame -> current.roll1 + current.roll2
-        is Spare -> current.roll1 + current.roll2 + frames[1].roll1
-        is Strike -> current.roll1  + when(val next = frames[1]) {
-            is OpenFrame -> next.roll1 + next.roll2
-            is Spare -> next.roll1 + next.roll2
-            else -> TODO()
-        }
+fun score(frames: List<Frame>): Int = frames.mapIndexed { i, frame ->
+    when (frame) {
+        is OpenFrame -> frame.roll1 + frame.roll2
+        is Spare -> frame.roll1 + frame.roll2 + frames.subList(i + 1).pins().take(1).sum()
+        is Strike -> frame.roll1 + frames.subList(i + 1).pins().take(2).sum()
     }
 }.sum()
+
+fun List<Frame>.pins(): Sequence<Int> = asSequence().flatMap(Frame::pins)
+
+fun <T> List<T>.subList(fromIndex: Int): List<T> =  subList(fromIndex, size)
