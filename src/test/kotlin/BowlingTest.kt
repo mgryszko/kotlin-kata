@@ -31,14 +31,12 @@ class BowlingTest {
 }
 
 sealed interface Frame {
-    val roll1: Int
-
     fun pins(): Sequence<Int>
 
     fun ordinaryScore(): Int
 }
 
-data class OpenFrame(override val roll1: Int, val roll2: Int) : Frame {
+data class OpenFrame(val roll1: Int, val roll2: Int) : Frame {
     init {
         require(roll1 + roll2 <= 9) { "Sum of pins must be less than or equal to 9" }
     }
@@ -48,7 +46,7 @@ data class OpenFrame(override val roll1: Int, val roll2: Int) : Frame {
     override fun ordinaryScore(): Int = roll1 + roll2
 }
 
-data class Spare(override val roll1: Int, val roll2: Int) : Frame {
+data class Spare(val roll1: Int, val roll2: Int) : Frame {
     init {
         require(roll1 + roll2 == 10) { "Sum of pins must be equal to 10" }
     }
@@ -59,11 +57,11 @@ data class Spare(override val roll1: Int, val roll2: Int) : Frame {
 }
 
 object Strike : Frame {
-    override val roll1: Int = 10
+    private const val roll: Int = 10
 
-    override fun pins(): Sequence<Int> = sequenceOf(roll1)
+    override fun pins(): Sequence<Int> = sequenceOf(roll)
 
-    override fun ordinaryScore(): Int = roll1
+    override fun ordinaryScore(): Int = roll
 }
 
 fun score(frames: List<Frame>): Int = frames.mapIndexed { i, frame ->
