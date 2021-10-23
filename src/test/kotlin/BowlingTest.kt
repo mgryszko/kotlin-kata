@@ -28,6 +28,11 @@ class BowlingTest {
         expect(score(listOf(Spare(4, 6), Strike, OpenFrame(1, 0)))).toBe(32)
         expect(score(listOf(Strike, Strike, Strike))).toBe(60)
     }
+
+    @Test
+    fun `final frame`() {
+        expect(score(listOf(OpenFrame(1, 8), FinalFrame(2, 4)))).toBe(15)
+    }
 }
 
 sealed interface Frame {
@@ -64,9 +69,16 @@ object Strike : Frame {
     override fun ordinaryScore(): Int = roll
 }
 
+data class FinalFrame(val roll1: Int, val roll2: Int) : Frame {
+    override fun pins(): Sequence<Int> = sequenceOf(roll1, roll2)
+
+    override fun ordinaryScore(): Int = roll1 + roll2
+}
+
 fun score(frames: List<Frame>): Int = frames.mapIndexed { i, frame ->
     frame.ordinaryScore() + when (frame) {
         is OpenFrame -> 0
+        is FinalFrame -> 0
         is Spare -> frames.subList(i + 1).pins().take(1).sum()
         is Strike -> frames.subList(i + 1).pins().take(2).sum()
     }
