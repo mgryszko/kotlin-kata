@@ -18,12 +18,15 @@ class BowlingTest {
     @Test
     fun `spare`() {
         expect(score(listOf(Spare(9, 1), OpenFrame(4, 3)))).toBe(21)
+        expect(score(listOf(Spare(9, 1), Spare(2, 8)))).toBe(22)
     }
 
     @Test
     fun `strike`() {
         expect(score(listOf(Strike, OpenFrame(4, 3)))).toBe(24)
         expect(score(listOf(Strike, Spare(4, 6), OpenFrame(1, 0)))).toBe(32)
+        expect(score(listOf(Spare(4, 6), Strike, OpenFrame(1, 0)))).toBe(32)
+        expect(score(listOf(Strike, Strike, Strike))).toBe(60)
     }
 }
 
