@@ -1,5 +1,7 @@
 package aoc.day1
 
+import aoc.readLines
+
 fun main() {
   val depths = "day1.txt".readLines().map(String::toInt)
   val increments = depths.increments()
@@ -9,9 +11,3 @@ fun main() {
 }
 
 fun List<Int>.increments() = this.windowed(2).map { (first, second) -> if (second > first) 1 else 0  }.sum()
-
-fun String.readLines(): List<String> {
-  val resource = Thread.currentThread().contextClassLoader.getResourceAsStream(this)
-  requireNotNull(resource) { "Resource $this not found" }
-  return resource.reader().readLines()
-}
