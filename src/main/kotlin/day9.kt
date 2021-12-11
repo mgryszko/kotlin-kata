@@ -1,5 +1,6 @@
 package aoc.day9
 
+import aoc.Pos
 import aoc.readLines
 
 fun main() {
@@ -69,8 +70,4 @@ data class HeightMap(val map: List<List<Height>>) {
 
   override fun toString(): String =
     map.joinToString(System.lineSeparator()) { it.joinToString("") }
-}
-
-data class Pos(val row: Int, val col: Int) {
-  override fun toString(): String = "($row,$col)"
 }

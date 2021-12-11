@@ -11,3 +11,7 @@ private fun String.toResourceReader(): InputStreamReader {
     requireNotNull(resource) { "Resource $this not found" }
     return resource.reader()
 }
+
+data class Pos(val row: Int, val col: Int) {
+    override fun toString(): String = "($row,$col)"
+}
