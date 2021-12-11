@@ -1,11 +1,13 @@
 package aoc.day9
 
+import aoc.Board
+import aoc.OneDimensionalBoard
 import aoc.Pos
 import aoc.readLines
 
 fun main() {
-  val lines = "day9.txt".readLines()
-  val heightMap = HeightMap(lines.map { it.toCharArray().map(Char::digitToInt) })
+  val lines = "day9.txt".readLines().map { it.toCharArray().map(Char::digitToInt) }
+  val heightMap = OneDimensionalBoard(lines.flatten(), lines.size, lines.first().size)
 
   val lowPos = heightMap.lowPoints()
 
@@ -29,7 +31,12 @@ val sampleLines = listOf(
 
 typealias Height = Int
 
-fun basin(map: HeightMap, initialPos: Pos): Set<Pos> {
+fun Board<Height>.lowPoints(): List<Pos> =
+  positions().filter { pos -> adjacent(pos).all { get(pos) < get(it) } }
+
+fun Board<Height>.neighboursExceptHighest(pos: Pos): List<Pos> = adjacent(pos).filter { get(it) != 9 }
+
+fun basin(map: Board<Height>, initialPos: Pos): Set<Pos> {
   val posToExplore = ArrayDeque(listOf(initialPos))
   val basin = mutableSetOf<Pos>()
   while (posToExplore.isNotEmpty()) {
@@ -38,36 +45,4 @@ fun basin(map: HeightMap, initialPos: Pos): Set<Pos> {
     posToExplore += map.neighboursExceptHighest(pos).filterNot(basin::contains)
   }
   return basin
-}
-
-data class HeightMap(val map: List<List<Height>>) {
-  private val rows = map.size
-  private val cols = map.first().size
-
-  operator fun get(p: Pos): Height = map[p.row][p.col]
-
-  fun lowPoints(): List<Pos> =
-    (0 until rows).flatMap { r -> (0 until cols).map { c -> Pos(r, c) } }.filter { pos ->
-      neighbours(pos).all { get(pos) < get(it) }
-    }
-
-  fun neighboursExceptHighest(pos: Pos): List<Pos> = neighbours(pos).filter { get(it) != 9 }
-
-  private fun neighbours(pos: Pos): List<Pos> =
-    listOfNotNull(up(pos), right(pos), down(pos), left(pos))
-
-  private fun up(pos: Pos): Pos? =
-    if (pos.row >= 1) pos.copy(row = pos.row - 1) else null
-
-  private fun down(pos: Pos): Pos? =
-    if (pos.row < rows - 1) pos.copy(row = pos.row + 1) else null
-
-  private fun left(pos: Pos): Pos? =
-    if (pos.col < cols - 1) pos.copy(col = pos.col + 1) else null
-
-  private fun right(pos: Pos): Pos? =
-    if (pos.col >= 1) pos.copy(col = pos.col - 1) else null
-
-  override fun toString(): String =
-    map.joinToString(System.lineSeparator()) { it.joinToString("") }
 }
