@@ -1,6 +1,8 @@
 package aoc.day5
 
+import aoc.Point
 import aoc.readLines
+import aoc.toPoint
 import kotlin.math.absoluteValue
 import kotlin.math.max
 import kotlin.math.min
@@ -13,10 +15,7 @@ fun main() {
 }
 
 fun toLine(line: String): Line =
-  line.split(" -> ").let { (p1, p2) -> Line(toPoint(p1), toPoint(p2)) }
-
-fun toPoint(p: String): Point =
-  p.split(',').let { (x, y) -> Point(x.toInt(), y.toInt()) }
+  line.split(" -> ").let { (p1, p2) -> Line(p1.toPoint(), p2.toPoint()) }
 
 fun pointsWithAtLeastTwoIntersections(lines: List<Line>): Int {
   val intersectionsByPoints = mutableMapOf<Point, Int>()
@@ -43,8 +42,6 @@ fun MutableMap<Int, MutableSet<Point>>.add(intersections: Int, point: Point) {
   val points = (get(intersections) ?: mutableSetOf()).apply { add(point) }
   set(intersections, points)
 }
-
-data class Point(val x: Int, val y: Int)
 
 data class Line(val p1: Point, val p2: Point) {
   fun isStraight(): Boolean = isHorizontal() || isVertical()

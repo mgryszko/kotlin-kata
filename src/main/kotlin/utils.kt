@@ -12,6 +12,11 @@ private fun String.toResourceReader(): InputStreamReader {
   return resource.reader()
 }
 
+fun String.toPoint(): Point =
+  split(',').let { (x, y) -> Point(x.toInt(), y.toInt()) }
+
+data class Point(val x: Int, val y: Int)
+
 data class Pos(val row: Int, val col: Int) {
   override fun toString(): String = "($row,$col)"
 }
@@ -84,3 +89,5 @@ class OneDimensionalBoard<E>(elements: List<E>, override val rows: Int, override
   override fun toString(): String =
     elements.chunked(rows).joinToString("\n") { it.joinToString("") }
 }
+
+fun <E> Iterable<Iterable<E>>.draw() = this.joinToString("\n") { it.joinToString("") }
