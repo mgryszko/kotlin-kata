@@ -1,27 +1,6 @@
 package aoc
 
-import java.io.InputStreamReader
-
-fun String.readLines(): List<String> = toResourceReader().readLines()
-
-fun String.readText(): String = toResourceReader().readText()
-
-private fun String.toResourceReader(): InputStreamReader {
-  val resource = Thread.currentThread().contextClassLoader.getResourceAsStream(this)
-  requireNotNull(resource) { "Resource $this not found" }
-  return resource.reader()
-}
-
-fun String.toPoint(): Point =
-  split(',').let { (x, y) -> Point(x.toInt(), y.toInt()) }
-
-data class Point(val x: Int, val y: Int)
-
-data class Pos(val row: Int, val col: Int) {
-  override fun toString(): String = "($row,$col)"
-}
-
-interface Board<E> {
+interface Board<out E> {
   val rows: Int
   val cols: Int
 
@@ -86,8 +65,7 @@ class OneDimensionalBoard<E>(elements: List<E>, override val rows: Int, override
 
   override fun toList(): List<E> = elements
 
-  override fun toString(): String =
-    elements.chunked(rows).joinToString("\n") { it.joinToString("") }
+  override fun toString(): String = elements.chunked(rows).draw()
 }
 
-fun <E> Iterable<Iterable<E>>.draw() = this.joinToString("\n") { it.joinToString("") }
+

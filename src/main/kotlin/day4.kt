@@ -1,5 +1,6 @@
 package aoc.day4
 
+import aoc.draw
 import aoc.readLines
 
 fun main() {
@@ -61,8 +62,7 @@ class Board(private val board: Map<Int, Int>, private val remNumbersInRows: List
 
   fun isBingo(): Boolean = remNumbersInRows.any { it == 0 } || remNumbersInCols.any { it == 0 }
 
-  override fun toString(): String =
-    board.keys.chunked(BOARD_SIZE).joinToString("\n") { it.joinToString(" ") }
+  override fun toString(): String = board.keys.chunked(BOARD_SIZE).draw(" ")
 }
 
 fun <T> List<T>.isSingle() = size == 1
