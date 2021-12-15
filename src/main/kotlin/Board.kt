@@ -29,8 +29,6 @@ interface Board<out E> {
       pos.left()?.up(),
     )
 
-  fun toList(): List<E>
-
   private fun Pos.up(): Pos? =
     if (row >= 1) copy(row = row - 1) else null
 
@@ -46,6 +44,8 @@ interface Board<out E> {
 
 interface MutableBoard<E> : Board<E> {
   operator fun set(neighbour: Pos, value: E)
+
+  fun toList(): List<E>
 }
 
 class OneDimensionalBoard<E>(elements: List<E>, override val rows: Int, override val cols: Int) : MutableBoard<E> {
