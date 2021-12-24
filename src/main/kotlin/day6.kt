@@ -1,6 +1,7 @@
 package aoc.day6
 
 import aoc.readText
+import aoc.sum
 import java.math.BigInteger
 import java.math.BigInteger.ZERO
 
@@ -21,5 +22,3 @@ fun laternfishPopulationAfterDays(population: Map<Int, BigInteger>, days: Int): 
       8 to reproducingFishes
     )
   }
-
-fun Collection<BigInteger>.sum(): BigInteger = fold(ZERO) { sum, element -> sum + element }
