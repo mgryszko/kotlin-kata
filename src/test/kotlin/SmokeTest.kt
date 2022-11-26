@@ -1,10 +1,8 @@
-import ch.tutteli.atrium.api.fluent.en_GB.toBe
-import ch.tutteli.atrium.api.verbs.expect
-import kotlin.test.Test
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.shouldBe
 
-class SmokeTest {
-    @Test
-    fun read() {
-        expect(true).toBe(false)
+class SmokeTest : FunSpec({
+    test("read") {
+        true shouldBe false
     }
-}
+})

@@ -4,8 +4,8 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinJvmOptions
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.jetbrains.kotlin.jvm") version "1.5.31"
-    id("com.github.ben-manes.versions") version "0.39.0"
+    id("org.jetbrains.kotlin.jvm") version "1.7.21"
+    id("com.github.ben-manes.versions") version "0.44.0"
 }
 
 repositories {
@@ -13,26 +13,23 @@ repositories {
 }
 
 object Versions {
-    const val junit = "5.8.1"
-    const val atrium = "0.16.0"
-    const val mockk = "1.12.0"
-    const val kotlinCoroutines = "1.5.2"
+    const val kotest = "5.5.4"
+    const val mockk = "1.13.2"
+    const val kotlinCoroutines = "1.6.4"
 }
 
 dependencies {
-    implementation(kotlin("stdlib-jdk8"))
+    implementation(kotlin("stdlib"))
     implementation(kotlin("reflect"))
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.kotlinCoroutines}")
 
-    testImplementation(kotlin("test"))
-    testImplementation(kotlin("test-junit5"))
-    testImplementation("org.junit.jupiter:junit-jupiter:${Versions.junit}")
-    testImplementation("ch.tutteli.atrium:atrium-fluent-en_GB:${Versions.atrium}")
+    testImplementation("io.kotest:kotest-runner-junit5:${Versions.kotest}")
+    testImplementation("io.kotest:kotest-assertions-core:${Versions.kotest}")
     testImplementation("io.mockk:mockk:${Versions.mockk}")
 }
 
 val kotlinOptions: KotlinJvmOptions.() -> Unit = {
-    jvmTarget = "16"
+    jvmTarget = "17"
 }
 val compileKotlin: KotlinCompile by tasks
 compileKotlin.kotlinOptions(kotlinOptions)
